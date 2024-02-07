@@ -21,5 +21,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('python_interview_trainer.interview.urls'))
+    # path('categories/', include('python_interview_trainer.categories.urls')),
+    # path('questions/', include('python_interview_trainer.questions.urls')),
+    # path('questionchoices/', include('python_interview_trainer.questionchoices.urls')),
+    # path('userstatistics/', include('python_interview_trainer.userstatistics.urls')),
 ]

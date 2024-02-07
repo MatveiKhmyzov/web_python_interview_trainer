@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.admin',  # Подключение модуля админ-панели
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'python_interview_trainer',
-    'python_interview_trainer.interview',
+    'python_interview_trainer.categories',
+    'python_interview_trainer.questionchoices',
+    'python_interview_trainer.questions',
+    'python_interview_trainer.userstatistics',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-RU'  # Язык админ-панели
 
 TIME_ZONE = 'UTC'
 
