@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'python_interview_trainer',
+    'python_interview_trainer.interview',
 ]
 
 MIDDLEWARE = [
