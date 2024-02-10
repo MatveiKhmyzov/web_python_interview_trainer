@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <div class="text-danget mt-3">
+        <h3>Simple Js/Python App</h3>
+        <hr>
+        <table>
+            <tr>
+                <td class="text-primary">{{forloop.counter }} {{question.question_text}}</td>
+            </tr>
+            {% for answer in question.answers.all %}
+                <tr>
+                    <td> <input type="radio" class="rb"> {{answer.choice}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

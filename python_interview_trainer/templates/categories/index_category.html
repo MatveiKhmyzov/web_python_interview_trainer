@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main role="main">
+
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3">Python interview trainer</h1>
+          <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+          <p><a class="btn btn-primary btn-lg" href="https://getbootstrap.com/docs/4.0/examples/jumbotron/#" role="button">Learn more »</a></p>
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- Example row of columns -->
+        <div class="row">
+          {% for cat in categories %}
+          <div class="col-md-4">
+            <h2>{{ cat.title }}</h2>
+            <p>###</p>
+            <p><a class="btn btn-secondary" href="https://getbootstrap.com/docs/4.0/examples/jumbotron/#" role="button">View details »</a></p>
+          </div>
+          {% endfor %}
+        </div>
+        <hr>
+
+      </div> <!-- /container -->
+
+    </main>
+{% endblock %}

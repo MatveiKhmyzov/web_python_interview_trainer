@@ -18,10 +18,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('categories/', include('python_interview_trainer.categories.urls')),
+    path('', views.IndexView.as_view(), name='home'),
+    path('categories/', include('python_interview_trainer.categories.urls')),
     # path('questions/', include('python_interview_trainer.questions.urls')),
     # path('questionchoices/', include('python_interview_trainer.questionchoices.urls')),
     # path('userstatistics/', include('python_interview_trainer.userstatistics.urls')),
