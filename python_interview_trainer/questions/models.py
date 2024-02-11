@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from python_interview_trainer.categories.models import Category
 
 
@@ -9,3 +10,6 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question_text
+
+    def get_absolute_url(self):
+        return reverse('show_question', kwargs={'pk': self.id})

@@ -3,7 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.TestCategory.as_view(), name='category_list'),
+    path('<slug:category_slug>', views.TestCategory.as_view(), name='category'),
     path('questions/', include('python_interview_trainer.questions.urls')),
     # path('<slug:cat_slug>/', views..as_view(), name='category'),
 ]

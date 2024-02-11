@@ -23,7 +23,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.IndexView.as_view(), name='home'),
-    path('categories/', include('python_interview_trainer.categories.urls')),
+    path('category/', include('python_interview_trainer.categories.urls')),
     # path('questions/', include('python_interview_trainer.questions.urls')),
     # path('questionchoices/', include('python_interview_trainer.questionchoices.urls')),
     # path('userstatistics/', include('python_interview_trainer.userstatistics.urls')),
