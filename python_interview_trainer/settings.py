@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'python_interview_trainer.questionchoices',
     'python_interview_trainer.questions',
     'python_interview_trainer.userstatistics',
+    'python_interview_trainer.users',
 ]
 
 MIDDLEWARE = [
