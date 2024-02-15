@@ -16,10 +16,15 @@
         <!-- Example row of columns -->
         <div class="row">
           {% for cat in categories %}
-          <div class="col-md-4">
-            <p class="link-read-advert"><a href="{{ cat.get_absolute_url }}">{{ cat.title }}</a></p>
-<!--            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>-->
-          </div>
+              <div class="col-md-4">
+                {% if user.is_authenticated %}
+                  <p class="link-read-advert"><a href="{{ cat.get_absolute_url }}">{{ cat.title }}</a></p>
+                {% else %}
+                  <p class="link-read-advert"><a href="{% url 'login' %}">{{ cat.title }}</a></p>
+                {% endif %}
+    <!--            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>-->
+              </div>
+
           {% endfor %}
         </div>
         <hr>
