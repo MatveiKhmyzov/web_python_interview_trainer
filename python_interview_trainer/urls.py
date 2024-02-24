@@ -25,8 +25,8 @@ urlpatterns = [
     path('', views.IndexView.as_view(), name='home'),
     path('contact/', views.contact, name='contact'),
     path('category/', include('python_interview_trainer.categories.urls')),
-    path('users/', include('python_interview_trainer.users.urls'))
+    path('users/', include('python_interview_trainer.users.urls')),
     # path('questions/', include('python_interview_trainer.questions.urls')),
-    # path('questionchoices/', include('python_interview_trainer.questionchoices.urls')),
+    # path('answers/', include('python_interview_trainer.userstatistics.urls')),
     # path('userstatistics/', include('python_interview_trainer.userstatistics.urls')),
 ]

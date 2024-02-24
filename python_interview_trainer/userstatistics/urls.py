@@ -4,5 +4,6 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('login/', views.login, name='login')
+    path('', views.AnswerView.as_view(), name='getting_answer'),
+    # path('<slug:cat_slug>/', views..as_view(), name='category'),
 ]

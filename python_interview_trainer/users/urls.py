@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from python_interview_trainer.users import views
 
 
 urlpatterns = [

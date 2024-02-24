@@ -5,7 +5,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse, reverse_lazy
 
-from users.forms import LoginUserForm, RegisterUserForm
+from python_interview_trainer.users.forms import LoginUserForm, RegisterUserForm
 
 
 class LoginUser(LoginView):
@@ -18,7 +18,7 @@ class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'users/register.html'
     extra_context = {'title': 'Регистрация пользователя'}
-    success_url = reverse_lazy('users:login')
+    success_url = reverse_lazy('login')
 
 
 def logout_user(request):
