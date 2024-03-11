@@ -12,4 +12,4 @@ class Question(models.Model):
         return self.question_text
 
     def get_absolute_url(self):
-        return reverse('show_question', kwargs={'pk': self.id})
+        return reverse('getting_answer', kwargs={'category_slug': self.category.slug, 'pk': self.pk})

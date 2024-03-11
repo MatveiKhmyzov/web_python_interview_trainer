@@ -1,4 +1,6 @@
-from django.views.generic import ListView, CreateView
+from datetime import datetime
+
+from django.views.generic import ListView, CreateView, DetailView
 from python_interview_trainer.questions.models import Question
 from python_interview_trainer.userstatistics.models import UserAnswers
 from python_interview_trainer.userstatistics.forms import ExamForm
@@ -7,15 +9,18 @@ from django.core.paginator import Paginator
 from django.views.generic import FormView
 from django.views.generic.list import MultipleObjectMixin
 from django.views.generic.edit import FormMixin
+from django.shortcuts import render, get_object_or_404
 
 
-class AnswerView(ListView, FormMixin):
-    model = Question
+class AnswerView(DetailView, FormMixin):
     form_class = ExamForm
     template_name = 'questions/questions1.html'
+    context_object_name = 'question'
     pk_url_kwarg = 'pk'
-    context_object_name = 'questions'
     paginate_by = 1
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Question, pk=self.kwargs[self.pk_url_kwarg])
 
     def get_queryset(self):
         return Question.objects.filter(category__slug=self.kwargs['category_slug']).select_related('category')
@@ -23,42 +28,78 @@ class AnswerView(ListView, FormMixin):
     def get_form_kwargs(self):
         """Passing the `choices` from your view to the form __init__ method"""
 
-        kwargs = super().get_form_kwargs()
-        questions = self.get_queryset()
-        for i in range(len(questions)):
-            answers = questions[i].answers.all()
-            for answer in answers:
-                # Here you can pass additional kwargs arguments to the form.
-                kwargs.setdefault('answers', []).append((answer.question.all()[0].id, answer.choice))
-        # print(self.kwargs)
-
+        kwargs = super(AnswerView, self).get_form_kwargs()
+        question = self.get_object()
+        kwargs['question'] = question
+        # kwargs['other_questions'] = self.get_queryset()[1:]
         return kwargs
 
-    def get(self, request, *args, **kwargs):
-        self.object = None
-        self.form = self.get_form(self.form_class)
-        # Explicitly states what get to call:
-        return ListView.get(self, request, *args, **kwargs)
+    @staticmethod
+    def get_generator_next_previous_elem(collection, elem_on_page):
+        collection_len = len(collection)
+        count = 0
+        if collection_len > 1:
+            for i in range(len(collection)):
+                count += 1
+                if collection[i] == elem_on_page and i == 0:
+                    return None, collection[i+1]
+                elif (collection[i] == elem_on_page or count == collection_len) and i == collection_len - 1:
+                    return collection[i - 1], None
+                elif collection[i] == elem_on_page:
+                    return collection[i-1], collection[i+1]
 
-    def post(self, request, *args, **kwargs):
-        # When the form is submitted, it will enter here
-        self.object = None
-        self.form = self.get_form(self.form_class)
 
-        if self.form.is_valid():
-            self.object = self.form.save()
-            # Here ou may consider creating a new instance of form_class(),
-            # so that the form will come clean.
-
-        # Whether the form validates or not, the view will be rendered by get()
-        return self.get(request, *args, **kwargs)
+        else:
+            return None, None
 
     def get_context_data(self, *args, **kwargs):
         # Just include the form
-        context = super(AnswerView, self).get_context_data(*args, **kwargs)
-        context['form'] = self.form
-        context['category'] = context['questions'][0].category
+        context = super(AnswerView, self).get_context_data(**kwargs)
+        # context['form'] = self.form
+        all_questions = self.get_queryset()
+        question_on_page = self.get_object()
+        # print(all_questions, question_on_page)
+        previous_question, next_question = self.get_generator_next_previous_elem(all_questions, question_on_page)
+        # print(previous_question, next_question)
+        context['category'] = context['question'].category
+        context['previous_question'] = previous_question
+        context['next_question'] = next_question
+        # context['question_number_in_lst'] = count
+        # context['next_questions'] = self.get_queryset()[list(self.get_queryset()).index(context['question'])+1:]
+        # context['previous_questions'] = self.get_queryset()[:list(self.get_queryset()).index(context['question'])]
+        # print(context)
         return context
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        # When the form is submitted, it will enter here
+        if request.method == 'POST':
+            user_id = request.user.id
+            question_id = Question.objects.get(pk=kwargs['pk']).id
+            choice = request.POST.get('choice')
+            time_create = datetime.now()
+            user_answer = UserAnswers.objects.create(question_id_id=question_id, choice_id=choice,
+                                                     time_create=time_create)
+            user_answer.user_id.add(user_id)
+            user_answer.save()
+            form = self.get_form(self.form_class)
+            # print(form)
+
+            # if form.is_valid():
+            #     print()
+            #     obj = form.save()
+            #     request.user.users.add(user_answer)
+            #     # user_answer.user_id.add(user_id)
+            #     print(obj.id)
+            #     obj.save()
+
+                # Here ou may consider creating a new instance of form_class(),
+                # so that the form will come clean.
+
+            # Whether the form validates or not, the view will be rendered by get()
+        return self.get(request, *args, **kwargs)
 
 
 # class AnswerView(MultipleObjectMixin, FormView):

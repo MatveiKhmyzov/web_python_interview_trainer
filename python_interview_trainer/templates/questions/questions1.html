@@ -5,37 +5,32 @@
     <div class="text-danget mt-3">
         <h3>Интервью по теме: "{{ category.title }}"</h3>
         <hr>
-        {% for question in questions %}
         <table>
                 <tr>
-                    <td class="text-primary">{{forloop.counter }} {{question.question_text}}</td>
+                    <td class="text-primary">{{question.question_text}}</td>
                 </tr>
         </table>
+                        {% if next_question %}
+                        <form action="{% url 'getting_answer' category.slug next_question.pk %}" method="post">
+                        {% else %}
                         <form action="" method="post">
+                        {% endif %}
                             {% csrf_token %}
                             {{ form.as_p }}
-                        <input type="submit" value="Vote">
+                            <input type="submit" value="Vote">
                         </form>
-        {% if page_obj.has_other_pages %}
-                <div class="d-flex align-items-end">
-                        {% if page_obj.has_previous %}
-                        <div class="gx-10 p-3">
-                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary">Previous</a>
-                        </div>
-                        {% endif %}
-                        <div class="gx-10 p-3">
-                            <span class="current">
-                                Вопрос {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-                            </span>
-                        </div>
-                        {% if page_obj.has_next %}
-                        <div class="gx-10 p-3">
-                            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary">Next</a>
-                        </div>
-                        {% endif %}
-                </div>
-        {% endif %}
-        {% endfor %}
+<!--        {% if next_questions %}-->
+<!--                <div class="d-flex align-items-end">-->
+<!--                        <div class="gx-10 p-3">-->
+<!--                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary">Previous</a>-->
+<!--                        </div>-->
+<!--                        {% if previous_questions %}-->
+<!--                        <div class="gx-10 p-3">-->
+<!--                            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary">Next</a>-->
+<!--                        </div>-->
+<!--                        {% endif %}-->
+<!--                </div>-->
+<!--        {% endif %}-->
     </div>
 </div>
 <!--    <div class="container">-->

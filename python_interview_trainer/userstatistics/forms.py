@@ -1,23 +1,29 @@
 from .models import UserAnswers
 from django import forms
 from django.utils.translation import gettext as _
+from python_interview_trainer.userstatistics.models import UserAnswers
 from python_interview_trainer.questions.models import Question
 from django.core.paginator import Paginator
 
 
-class ExamForm(forms.Form):
-    answers = forms.ChoiceField(choices=[], widget=forms.RadioSelect, required=False)
+class ExamForm(forms.ModelForm):
+    class Meta:
+        model = UserAnswers
+        fields = ['choice']
+
+    user_id = None
+    question_id = None
 
     def __init__(self, *args, **kwargs):
         """Populating the choices of  the favorite_choices field using the favorites_choices kwargs"""
-
-        answers = kwargs.pop('answers')
-
-        super().__init__(*args, **kwargs)
-
-        self.fields['answers'].choices = answers
-
-
+        # self.user_id = user
+        # self.question_id = Question.objects.filter(user=self.user)
+        question = kwargs.pop('question')
+        # other_questions = kwargs.pop('other_questions')
+        super(ExamForm, self).__init__(*args, **kwargs)
+        self.fields['choice'] = forms.ModelChoiceField(queryset=question.answers.all(),
+                                                       widget=forms.RadioSelect, required=False)
+        # print(other_questions)
 
 # class ExamForm(forms.Form):
 #     def __init__(self, category_slug):

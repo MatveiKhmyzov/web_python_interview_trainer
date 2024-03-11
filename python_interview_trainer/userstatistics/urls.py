@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from . import views
+from python_interview_trainer.userstatistics import views
 
 urlpatterns = [
-    path('', views.AnswerView.as_view(), name='getting_answer'),
+    path('<int:pk>', views.AnswerView.as_view(), name='getting_answer'),
     # path('<slug:cat_slug>/', views..as_view(), name='category'),
 ]
