@@ -16,7 +16,6 @@ class TestCategory(DetailView):
         context = super(TestCategory, self).get_context_data(**kwargs)
         context['questions'] = Question.objects.filter(category__slug=context['category'].slug)
         context['start_question'] = context['questions'][0]
-        # print(context)
         return context
 
 

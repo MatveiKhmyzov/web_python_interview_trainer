@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
     <div class="container">
@@ -10,43 +11,40 @@
                     <td class="text-primary">{{question.question_text}}</td>
                 </tr>
         </table>
-                        {% if next_question %}
-                        <form action="{% url 'getting_answer' category.slug next_question.pk %}" method="post">
-                        {% else %}
-                        <form action="" method="post">
-                        {% endif %}
+                        <form id="ask_form" action="{% url 'getting_answer' category.slug question.pk %}" method="post" name="ask_form">
                             {% csrf_token %}
                             {{ form.as_p }}
-                            <input type="submit" value="Vote">
+                            <input
+                                id="asking"
+                                type="button"
+                                class="btn btn-info"
+                                value="Asking"
+                                onclick="F1(); return false;">
+                            {% if next_question %}
+                            <input
+                                id="next"
+                                type="button"
+                                class="d-none btn btn-info"
+                                value="Next question"
+                                onclick="location.href='{% url 'getting_answer' category.slug next_question.pk %}';"
+                            >
+                            <script>
+                                function F1()
+                                {
+                                  var next_button = document.getElementById("next");
+                                  var ask_button = document.getElementById("asking");
+                                  let contain = next_button.classList.contains("d-none")
+                                  if (contain === true) {
+                                    next_button.classList.remove("d-none");
+                                    ask_button.classList.add("d-none");
+                                  }
+                                }
+                            </script>
+                            {% endif %}
                         </form>
-<!--        {% if next_questions %}-->
-<!--                <div class="d-flex align-items-end">-->
-<!--                        <div class="gx-10 p-3">-->
-<!--                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary">Previous</a>-->
-<!--                        </div>-->
-<!--                        {% if previous_questions %}-->
-<!--                        <div class="gx-10 p-3">-->
-<!--                            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary">Next</a>-->
-<!--                        </div>-->
-<!--                        {% endif %}-->
-<!--                </div>-->
-<!--        {% endif %}-->
+
+        </div>
     </div>
-</div>
-<!--    <div class="container">-->
-<!--    <div class="text-danget mt-3">-->
-<!--        <h3>Интервью по теме: "{{ question.category.title }}"</h3>-->
-<!--        <hr>-->
-<!--<h1>{{ question.question_text }}</h1>-->
-
-
-<!--<form action="" method="post">-->
-<!--    {% csrf_token %}-->
-<!--    {{ form.as_p }}-->
-<!--<input type="submit" value="Vote">-->
-<!--</form>-->
-<!--            </div>-->
-<!--</div>-->
 
 {% endblock %}
 
