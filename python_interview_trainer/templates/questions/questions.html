@@ -1,42 +1,86 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
     <div class="container">
     <div class="text-danget mt-3">
         <h3>Интервью по теме: "{{ category.title }}"</h3>
         <hr>
-        {% for question in questions %}
         <table>
                 <tr>
-                    <td class="text-primary">{{forloop.counter }} {{question.question_text}}</td>
+                    <td class="text-primary">{{question.question_text}}</td>
                 </tr>
-
-                {% for answer in question.answers.all %}
-                    <tr>
-                        <td> <input type="radio" class="rb"> {{answer.choice}}</td>
-                    </tr>
-                {% endfor %}
-        </table>
-        {% if page_obj.has_other_pages %}
-                <div class="d-flex align-items-end">
-                        {% if page_obj.has_previous %}
-                        <div class="gx-10 p-3">
-                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary">Previous</a>
-                        </div>
+        </table>        {% if next_question %}
+                        <form onsubmit="F1(event);" id="ask_form" action="{% url 'getting_answer' category.slug question.pk %}" method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <input
+                                id="asking"
+                                type="submit"
+                                class="btn btn-info"
+                                value="Asking"
+                            >
+                            <input
+                                id="next"
+                                type="hidden"
+                                class="btn btn-info"
+                                value="Next question"
+                            >
+                            <script>
+                                function F1(event)
+                                {
+                                  var next_button = document.getElementById("next");
+                                  var ask_button = document.getElementById("asking");
+                                  var ask_form = document.getElementById("ask_form");
+                                  var res_button = document.getElementById("get_result");
+                                  console.log(res_button === true)
+                                  if (next_button.type = "hidden")
+                                  {
+                                    alert("F1 called")
+                                    next_button.type = "submit";
+                                    ask_button.classList.add("d-none");
+                                    ask_form.action = "{% url 'getting_answer' category.slug next_question.pk %}";
+                                    ask_form.onsubmit = "";
+                                  }
+                                  event.preventDefault();
+                                }
+                            </script>
+                        {% else %}
+                            <form onsubmit="F2(event);" id="last_ask_form" action="{% url 'getting_answer' category.slug question.pk %}" method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <input
+                                id="last_asking"
+                                type="submit"
+                                class="btn btn-info"
+                                value="Asking"
+                            >
+                            <input
+                                id="get_result"
+                                type="hidden"
+                                class="btn btn-info"
+                                value="Get results"
+                            >
+                            <script>
+                                function F2(event)
+                                {
+                                  var last_ask_button = document.getElementById("last_asking");
+                                  var last_ask_form = document.getElementById("last_ask_form");
+                                  var res_button = document.getElementById("get_result");
+                                  res_button.type = "submit";
+                                  last_ask_button.classList.add("d-none");
+                                  alert("get_final_interview_page");
+                                  last_ask_form.action = "{% url 'getting_result' category.slug %}";
+                                  last_ask_form.onsubmit = "";
+                                  last_ask_form.method = "";
+                                  event.preventDefault();
+                                }
+                            </script>
                         {% endif %}
-                        <div class="gx-10 p-3">
-                            <span class="current">
-                                Вопрос {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-                            </span>
-                        </div>
-                        {% if page_obj.has_next %}
-                        <div class="gx-10 p-3">
-                            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary">Next</a>
-                        </div>
-                        {% endif %}
-                </div>
-        {% endif %}
-        {% endfor %}
+                        </form>
+        </div>
     </div>
-</div>
+
 {% endblock %}
+
+

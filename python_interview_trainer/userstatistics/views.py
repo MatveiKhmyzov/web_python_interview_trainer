@@ -1,17 +1,16 @@
 from datetime import datetime
 
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from python_interview_trainer.questions.models import Question
 from python_interview_trainer.userstatistics.models import UserAnswers
 from python_interview_trainer.userstatistics.forms import ExamForm
 from django.views.generic.edit import FormMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic import FormView
 
 
 class AnswerView(DetailView, FormMixin):
     form_class = ExamForm
-    template_name = 'questions/questions1.html'
+    template_name = 'questions/questions.html'
     context_object_name = 'question'
     pk_url_kwarg = 'pk'
     paginate_by = 1
@@ -36,13 +35,12 @@ class AnswerView(DetailView, FormMixin):
         """Getting previous and next elements of collection by based on current element of page"""
 
         collection_len = len(collection)
-        count = 0
         if collection_len > 1:
             for i in range(len(collection)):
-                count += 1
                 if collection[i] == elem_on_page and i == 0:
                     return None, collection[i+1]
-                elif (collection[i] == elem_on_page or count == collection_len) and i == collection_len - 1:
+                elif collection[i] == elem_on_page and i == collection_len-1:
+                    print(i, collection_len)
                     return collection[i - 1], None
                 elif collection[i] == elem_on_page:
                     return collection[i-1], collection[i+1]
@@ -56,7 +54,6 @@ class AnswerView(DetailView, FormMixin):
         context = super(AnswerView, self).get_context_data(**kwargs)
         all_questions = self.get_queryset()
         question_on_page = self.get_object()
-        print(question_on_page.id)
         previous_question, next_question = self.get_generator_next_previous_elem(all_questions, question_on_page)
         context['question'] = question_on_page
         context['category'] = context['question'].category
@@ -74,14 +71,26 @@ class AnswerView(DetailView, FormMixin):
         question = Question.objects.get(pk=kwargs['pk'])
         choice = request.POST.get('choice')
         time_create = datetime.now()
-        # form = ExamForm(request.POST, question=question)
-        # if form.is_valid():
-        #     try:
         user_answer = UserAnswers.objects.create(question_id_id=question.id, choice_id=choice,
                                                              time_create=time_create)
         user_answer.user_id.add(user_id)
-        # print(user_answer)
-            # except:
-            #     form.add_error(None, 'Ошибка сохранения ответа в базу данных')
-        # form = self.get_form(self.form_class)
         return self.get(request, *args, **kwargs)
+
+
+class ResultView(ListView):
+    model = UserAnswers
+    template_name = 'questions/final_interview.html'
+    context_object_name = 'results'
+
+    def get_queryset(self):
+        """Getting answers only for a certain category"""
+
+        return UserAnswers.objects.filter(question_id__category__slug=self.kwargs['category_slug'])
+
+    def get_context_data(self, *args, **kwargs):
+        """Getting context data for results page"""
+
+        context = super(ResultView, self).get_context_data(**kwargs)
+        user_answer = self.get_queryset()[0]
+        context['category'] = user_answer.question_id.category.title
+        return context
